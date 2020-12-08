@@ -1,0 +1,8 @@
+{
+  "main.ejs": {
+    "description": ""
+  },
+  "user.ejs": {
+    "description": "Layout used for a logged in user"
+  }
+}

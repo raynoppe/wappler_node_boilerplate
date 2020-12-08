@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<base href="/">
+<script src="dmxAppConnect/dmxAppConnect.js"></script>
+<meta charset="UTF-8">
+<title>Untitled Document</title>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="bootstrap/4/css/bootstrap.min.css" />
+<script src="dmxAppConnect/dmxBootstrap4Navigation/dmxBootstrap4Navigation.js" defer=""></script>
+<script src="dmxAppConnect/dmxRouting/dmxRouting.js" defer=""></script>
+</head>
+<body is="dmx-app" id="user">
+
+<header class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand mr-auto" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar1_collapse" aria-controls="navbar1_collapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbar1_collapse">
+    <div class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Page 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Page 2</a>
+      </li>
+      <li class="nav-item dropdown ml-auto">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Preferences&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Account</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Logout</a>
+        </div>
+      </li>
+    </div>
+  </div>
+</nav>      </div>
+    </div>
+  </div>
+</header>
+<div is="dmx-view" id="content">
+  <%- await include(content, locals); %>
+</div>
+<footer class="bg-light wappler-block">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
+<span class="navbar-text p-2 d-none d-sm-block d-md-block small"><i class="fa fa-map-marker"></i> 1234 Street Name, City Name</span>
+<span class="navbar-text p-2 small"><i class="fa fa-phone"></i> (800) 123-4567</span>
+<span class="navbar-text p-2 d-none d-sm-block d-md-block small"><i class="fa fa-envelope"></i> mail@example.com</span>
+<span class="navbar-text p-2 d-none d-sm-block d-md-block small ml-auto">&copy; Copyright 2019. All Rights Reserved.</span>
+</nav>      </div>
+    </div>
+  </div>
+</footer><script src="bootstrap/4/js/popper.min.js"></script>
+
+<script src="bootstrap/4/js/bootstrap.min.js"></script>
+</body>
+</html>
