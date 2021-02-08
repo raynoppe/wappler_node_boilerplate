@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "options": {
+      "linkedFile": "/views/partials/registerform.ejs",
+      "linkedForm": "register1"
+    },
+    "$_GET": [
+      {
+        "type": "text",
+        "name": "name"
+      }
+    ],
+    "$_POST": [
+      {
+        "type": "text",
+        "fieldName": "firstname",
+        "name": "firstname"
+      },
+      {
+        "type": "text",
+        "fieldName": "lastname",
+        "name": "lastname"
+      },
+      {
+        "type": "text",
+        "fieldName": "email",
+        "name": "email"
+      },
+      {
+        "type": "text",
+        "fieldName": "password",
+        "name": "password"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "validate",
+        "module": "validator",
+        "action": "validate",
+        "options": {
+          "data": [
+            {
+              "name": "validate_email",
+              "value": "{{$_POST.email}}",
+              "rules": {
+                "db:notexists": {
+                  "param": {
+                    "connection": "Cocktail",
+                    "table": "users",
+                    "column": "email"
+                  },
+                  "message": "E-mail already exists in database."
+                }
+              },
+              "fieldName": "email"
+            }
+          ]
+        }
+      },
+      {
+        "name": "newSecpin",
+        "module": "core",
+        "action": "setvalue",
+        "options": {
+          "key": "newSecpin",
+          "value": "{{secpin()}}"
+        }
+      },
+      {
+        "name": "insert_new_user",
+        "module": "dbupdater",
+        "action": "insert",
+        "options": {
+          "connection": "Cocktail",
+          "sql": {
+            "type": "insert",
+            "values": [
+              {
+                "table": "users",
+                "column": "firstname",
+                "type": "text",
+                "value": "{{$_POST.firstname}}"
+              },
+              {
+                "table": "users",
+                "column": "lastname",
+                "type": "text",
+                "value": "{{$_POST.lastname}}"
+              },
+              {
+                "table": "users",
+                "column": "password",
+                "type": "text",
+                "value": "{{$_POST.password.sha256('dev2021')}}"
+              },
+              {
+                "table": "users",
+                "column": "email",
+                "type": "text",
+                "value": "{{$_POST.email}}"
+              },
+              {
+                "table": "users",
+                "column": "username",
+                "type": "text",
+                "value": "{{shuuid()}}"
+              },
+              {
+                "table": "users",
+                "column": "pin",
+                "type": "text",
+                "value": "{{newSecpin}}"
+              }
+            ],
+            "table": "users",
+            "returning": "id",
+            "query": "INSERT INTO users\n(firstname, lastname, password, email, username, pin) VALUES (:P1 /* {{$_POST.firstname}} */, :P2 /* {{$_POST.lastname}} */, :P3 /* {{$_POST.password.sha256('dev2021')}} */, :P4 /* {{$_POST.email}} */, :P5 /* {{shuuid()}} */, :P6 /* {{newSecpin}} */)",
+            "params": [
+              {
+                "name": ":P1",
+                "type": "expression",
+                "value": "{{$_POST.firstname}}"
+              },
+              {
+                "name": ":P2",
+                "type": "expression",
+                "value": "{{$_POST.lastname}}"
+              },
+              {
+                "name": ":P3",
+                "type": "expression",
+                "value": "{{$_POST.password.sha256('dev2021')}}"
+              },
+              {
+                "name": ":P4",
+                "type": "expression",
+                "value": "{{$_POST.email}}"
+              },
+              {
+                "name": ":P5",
+                "type": "expression",
+                "value": "{{shuuid()}}"
+              },
+              {
+                "name": ":P6",
+                "type": "expression",
+                "value": "{{newSecpin}}"
+              }
+            ]
+          }
+        },
+        "meta": [
+          {
+            "name": "identity",
+            "type": "text"
+          },
+          {
+            "name": "affected",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "",
+        "module": "mail",
+        "action": "send",
+        "options": {
+          "instance": "mail",
+          "subject": "Welcome to cocktail",
+          "fromName": "Admin",
+          "fromEmail": "admin@mapped.life",
+          "toName": "{{$_POST.firstname}}",
+          "toEmail": "{{$_POST.email}}",
+          "body": "Hi {{$_POST.firstname}}\n\nWelcome to Cocktail.\n\nYour verificatoin pin is: {{newSecpin}}"
+        }
+      }
+    ]
+  }
+}

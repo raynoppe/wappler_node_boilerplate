@@ -1,0 +1,9 @@
+{
+  "name": "mail",
+  "module": "mail",
+  "action": "setup",
+  "options": {
+    "host": "smtp.mailgun.org",
+    "username": "postmaster@you.life"
+  }
+}

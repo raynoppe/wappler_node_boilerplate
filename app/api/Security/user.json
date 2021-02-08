@@ -1,0 +1,61 @@
+[
+  "SecurityProviders/security",
+  {
+    "name": "",
+    "module": "auth",
+    "action": "restrict",
+    "options": {
+      "provider": "security",
+      "loginUrl": "/",
+      "forbiddenUrl": "/"
+    }
+  },
+  {
+    "name": "query",
+    "module": "dbconnector",
+    "action": "single",
+    "options": {
+      "connection": "Cocktail",
+      "sql": {
+        "type": "SELECT",
+        "columns": [
+          {
+            "table": "users",
+            "column": "id",
+            "aggregate": ""
+          },
+          {
+            "table": "users",
+            "column": "username"
+          },
+          {
+            "table": "users",
+            "column": "firstname"
+          }
+        ],
+        "table": {
+          "name": "users"
+        },
+        "joins": [],
+        "query": "SELECT id, username, firstname\nFROM users",
+        "params": []
+      }
+    },
+    "output": true,
+    "meta": [
+      {
+        "name": "id",
+        "type": "text"
+      },
+      {
+        "name": "username",
+        "type": "text"
+      },
+      {
+        "name": "firstname",
+        "type": "text"
+      }
+    ],
+    "outputType": "object"
+  }
+]

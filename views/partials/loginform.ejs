@@ -1,0 +1,135 @@
+<!-- Wappler include jquery_slim_33="cdn" fontawesome_4="cdn" bootstrap4="local" is="dmx-app" id="loginform" appConnect="local" components="{dmxBrowser:{},dmxNotifications:{},dmxValidator:{},dmxBootstrap4Modal:{}}" -->
+<dmx-value id="showloading" dmx-bind:value="false"></dmx-value>
+<script is="dmx-flow" id="flow_password_changed" type="text/dmx-flow">[
+  {
+    run: {action: "{{loginstate.setValue('thankyou')}}"}
+  },
+  {
+    wait: {delay: 2000}
+  },
+  {
+    run: {action: "{{loginstate.setValue('login')}}"}
+  },
+  {
+    wait: {delay: 1000}
+  },
+  {
+    run: {action: "{{browserlogin.goto('../app')}}"}
+  }
+]</script>
+<div is="dmx-browser" id="browserlogin"></div>
+<dmx-value id="loginstate" dmx-bind:value="'login'"></dmx-value>
+
+<div class="container" dmx-show="loginstate.value == 'loading'">
+  <div class="d-flex justify-content-center mt-3">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+</div>
+<div class="container-fluid" dmx-show="loginstate.value === 'login'">
+  <form id="login" method="post" is="dmx-serverconnect-form" action="../api/Security/login" dmx-on:success="browserlogin.goto('../app')" dmx-on:unauthorized="notifies1.danger('Your provided details are incorrect. Please try again.')" dmx-on:submit="loginstate.setValue('login')"><div class="row">
+   <div class="col-12 text-left">
+<p class="mb-0">Please enter your details below to login...</p>
+<div class="row">
+<div class="col">
+<dmx-notifications id="notifies1"></dmx-notifications>
+</div>
+</div>
+<div class="row" id="row_email"><div class="col mt-4">
+          <input type="text" id="login_email" name="username" class="form-control" placeholder="Email">
+        </div></div>
+      <div class="row mt-4" id="row_password">
+        <div class="col">
+          <div class="input-group">
+            <input type="password" id="login_password" name="password" class="form-control" placeholder="Password">
+            <div class="input-group-append" id="button-addon4">
+              <button class="btn btn-outline-secondary" type="button" onclick="togglePass('login_password')"><span id="login_password_eye" class="fa fa-eye"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="row mt-4" id="row_remember">
+<div class="col"><div class="custom-control custom-switch">
+  <input class="custom-control-input" type="checkbox" value="1" id="remember" name="remember">
+  <label class="custom-control-label" for="remember">Keep me logged in</label>
+</div></div>
+</div>
+
+      <div class="row mt-4">
+        <div class="col">
+          <button id="login.submit" class="btn btn-block btn-primary" type="submit">Submit</button>
+        </div>
+      </div>
+<div class="row mt-4">
+        <div class="col">
+          <button id="login.submit1" class="btn btn-block btn-outline-secondary" dmx-on:click="loginstate.setValue('forgot');login_reset.inp_email_recover.setValue(inp_email.value)">Forgot Password</button>
+        </div>
+      </div>
+    </div>
+  </div></form>
+
+
+</div>
+<div class="container" dmx-show="loginstate.value === 'forgot'"><form id="login_reset" method="post" is="dmx-serverconnect-form" action="../api/Security/sendpin" dmx-on:success="loginstate.setValue('pin')" dmx-on:submit="loginstate.setValue('loading')" dmx-on:invalid="loginstate.setValue('forgot')"><div class="row">
+   <div class="col-12 text-left">
+      <p class="mb-0">We will send a recovery pin to your registered email address.</p>
+<div class="row" id="row_email_recover"><div class="col mt-4">
+          <input type="email" id="inp_email_recover" name="email_recover" class="form-control" placeholder="Email" required="" data-msg-required="Please enter your registered e-mail address" data-rule-email="">
+        </div></div>
+        
+      <div class="row mt-4">
+        <div class="col">
+          <button id="button_send_pin" class="btn btn-block btn-primary" type="submit" data-target="#modal_loading">Send Recovery Pin</button>
+        </div>
+      </div>
+<div class="row mt-4">
+        <div class="col">
+          <button id="recovery_have_pin" class="btn btn-block btn-secondary" dmx-on:click="loginstate.setValue('pin')">I already have a pin</button>
+        </div>
+      </div>
+<div class="row mt-4">
+        <div class="col">
+          <button id="recovery_cancel" class="btn btn-block btn-outline-secondary" dmx-on:click="loginstate.setValue('login')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div></form></div>
+<div class="container" dmx-show="loginstate.value === 'pin'"><form id="login_code" method="post" is="dmx-serverconnect-form" action="../api/Security/changepassword" dmx-on:success="run([{run:{action:`loginstate.setValue(\'thankyou\')`}},{wait:{delay:1000}},{run:{action:`loginstate.setValue(\'login\')`}}])" dmx-on:submit="loginstate.setValue('pin')" dmx-on:invalid="loginstate.setValue('forgot')"><div class="row">
+   <div class="col-12 text-left">
+      <p class="mb-0">Please enter the PIN you recieved in your e-mail...</p>
+<div class="row" id="row_change_email"><div class="col mt-4">
+          <input type="text" id="change_email" name="recovery_email" class="form-control" placeholder="Email" required="" data-msg-required="Enter your registered email address" data-rule-email="">
+        </div></div>
+      <div class="row mt-4" id="row_change_pin"><div class="col">
+          <input type="password" id="change_pin" name="recovery_pin" class="form-control" placeholder="PIN" required="" data-msg-required="Enter the PIN sent to your email.">
+        </div></div>
+<div class="row mt-4" id="row_change_password"><div class="col">
+          <div class="input-group">
+            <input type="password" id="change_password" name="recovery_password" class="form-control" placeholder="New password">
+            <div class="input-group-append" id="button-change_password">
+								<button class="btn btn-outline-secondary" type="button" onclick="togglePass('change_password')"><span id="change_password_eye" class="fa fa-eye"></span></button>
+							</div>
+          </div>
+          
+        </div></div>
+      <div class="row mt-4">
+        <div class="col">
+          <button id="button_reset_pin" class="btn btn-block btn-primary" type="submit">Submit</button>
+        </div>
+      </div>
+<div class="row mt-4">
+        <div class="col">
+          <button id="button_pin_cancel" class="btn btn-block btn-outline-secondary" dmx-on:click="loginstate.setValue('login')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div></form></div>
+<div class="container mt-5" dmx-show="loginstate.value == 'thankyou'">
+<div class="row text-center">
+  <div class="col">
+    <h3>Thank you. Your password has been changed.</h3>
+    <p class="text-h3">You should be auto logged in. If not please <a href="../app">click here</a>.</p>
+  </div>
+</div>
+</div>

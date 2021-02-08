@@ -10,6 +10,16 @@
       "path": "/test",
       "page": "test",
       "layout": "user"
+    },
+    {
+      "path": "/app",
+      "page": "app",
+      "layout": "user"
     }
-  ]
+  ],
+  "layouts": {
+    "user": {
+      "exec": "/api/Security/user"
+    }
+  }
 }

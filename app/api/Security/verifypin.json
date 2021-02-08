@@ -1,0 +1,229 @@
+{
+  "meta": {
+    "options": {
+      "linkedFile": "/views/partials/registerform.ejs",
+      "linkedForm": "form_verify_pin"
+    },
+    "$_POST": [
+      {
+        "type": "text",
+        "fieldName": "verify_email",
+        "options": {
+          "rules": {
+            "core:required": {
+              "param": ""
+            },
+            "core:email": {
+              "param": ""
+            }
+          }
+        },
+        "name": "verify_email"
+      },
+      {
+        "type": "text",
+        "fieldName": "verify_password",
+        "name": "verify_password"
+      },
+      {
+        "type": "text",
+        "fieldName": "verify_pin",
+        "name": "verify_pin"
+      },
+      {
+        "type": "text",
+        "name": "pin"
+      },
+      {
+        "type": "number",
+        "name": "id"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "validate",
+        "module": "validator",
+        "action": "validate",
+        "options": {
+          "data": [
+            {
+              "name": "validate_email",
+              "value": "{{$_POST.verify_email}}",
+              "rules": {
+                "db:exists": {
+                  "param": {
+                    "connection": "Cocktail",
+                    "table": "users",
+                    "column": "email"
+                  },
+                  "message": "E-mail does not exist"
+                }
+              },
+              "fieldName": "verify_email"
+            },
+            {
+              "name": "validate_pin",
+              "value": "{{$_POST.verify_pin}}",
+              "rules": {
+                "db:exists": {
+                  "param": {
+                    "connection": "Cocktail",
+                    "table": "users",
+                    "column": "pin"
+                  },
+                  "message": "The pin you provided is incorrect"
+                }
+              },
+              "fieldName": "verify_pin"
+            }
+          ]
+        }
+      },
+      {
+        "name": "update",
+        "module": "dbupdater",
+        "action": "update",
+        "options": {
+          "connection": "Cocktail",
+          "sql": {
+            "type": "update",
+            "values": [
+              {
+                "table": "users",
+                "column": "pin",
+                "type": "text",
+                "value": "{{secpin()}}"
+              },
+              {
+                "table": "users",
+                "column": "verified",
+                "type": "text",
+                "value": "Yes"
+              }
+            ],
+            "table": "users",
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "email",
+                  "field": "email",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{$_POST.verify_email}}",
+                  "data": {
+                    "column": "email"
+                  },
+                  "operation": "="
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "UPDATE users\nSET pin = :P1 /* {{secpin()}} */, verified = 'Yes'\nWHERE email = :P2 /* {{$_POST.verify_email}} */",
+            "params": [
+              {
+                "name": ":P1",
+                "type": "expression",
+                "value": "{{secpin()}}"
+              },
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P2",
+                "value": "{{$_POST.verify_email}}"
+              }
+            ]
+          }
+        },
+        "meta": [
+          {
+            "name": "affected",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "query",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "Cocktail",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "users",
+                "column": "email"
+              },
+              {
+                "table": "users",
+                "column": "password"
+              }
+            ],
+            "table": {
+              "name": "users"
+            },
+            "joins": [],
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "users.email",
+                  "field": "users.email",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{$_POST.verify_email}}",
+                  "data": {
+                    "table": "users",
+                    "column": "email",
+                    "type": "text"
+                  },
+                  "operation": "="
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "SELECT email, password\nFROM users\nWHERE email = :P1 /* {{$_POST.verify_email}} */",
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{$_POST.verify_email}}"
+              }
+            ]
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "name": "email",
+            "type": "text"
+          },
+          {
+            "name": "password",
+            "type": "text"
+          }
+        ],
+        "outputType": "object"
+      },
+      {
+        "name": "identity",
+        "module": "auth",
+        "action": "login",
+        "options": {
+          "provider": "security",
+          "username": "{{query.email}}",
+          "remember": 1,
+          "password": "{{query.password}}"
+        },
+        "output": true,
+        "meta": []
+      }
+    ]
+  }
+}

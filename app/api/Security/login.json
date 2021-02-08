@@ -1,0 +1,11 @@
+{
+  "name": "identity",
+  "module": "auth",
+  "action": "login",
+  "options": {
+    "provider": "security",
+    "password": "{{$_POST.password.sha256('dev2021')}}"
+  },
+  "output": true,
+  "meta": []
+}

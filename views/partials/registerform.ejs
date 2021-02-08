@@ -1,0 +1,89 @@
+<!-- Wappler include jquery_slim_33="cdn" fontawesome_4="cdn" bootstrap4="local" is="dmx-app" id="registerform" appconnect="local" components="{dmxNotifications:{},dmxValidator:{},dmxFormatter:{},dmxBrowser:{}}" role="application" -->
+<script is="dmx-flow" id="flow1" type="text/dmx-flow">[
+  {
+    wait: {delay: 2000}
+  },
+  {
+    runJS: {
+      function: "gotoloc",
+      args: ["/app"],
+      output: true
+    }
+  }
+]</script>
+<div is="dmx-browser" id="browserregister"></div>
+<dmx-value id="reg_show_verify" dmx-bind:value="'register'"></dmx-value>
+<dmx-notifications id="regnotification"></dmx-notifications>
+<div class="container mb-5" is="dmx-if" id="conditional1" dmx-bind:condition="reg_show_verify.value == 'register'">
+  <form id="register1" method="post" is="dmx-serverconnect-form" action="../api/Security/newuser" dmx-on:success="regnotification.success('You are successfully registered');reg_show_verify.setValue('verify')">
+  <div class="row justify-content-center">
+    <div class="col-12 text-center">
+      <div class="fdb-box fdb-touch">
+        <div class="row">
+          <div class="col mt-4">
+            <input type="text" id="inp_firstname" name="firstname" class="form-control" placeholder="First Name">
+          </div>
+        </div>
+<div class="row">
+          <div class="col mt-4">
+            <input type="text" id="inp_lastname" name="lastname" class="form-control" placeholder="Last Name">
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <input type="email" id="reg_email" name="email" class="form-control" placeholder="Email" required="" data-msg-required="This field is required" data-rule-email="">
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <input type="password" id="reg_password" name="password" class="form-control mb-1" placeholder="Password">
+            <p class="text-right"><a href="#">Already have an account?</a></p>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <button id="register1_submit" class="btn btn-block btn-primary" type="submit">Register</button>
+<button id="btn_verify" class="btn mt-3 btn-block btn-outline-primary" dmx-on:click="reg_show_verify.setValue('verify')">I have a verification pin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+</div>
+<div class="container mb-5" is="dmx-if" id="conditional2" dmx-bind:condition="reg_show_verify.value == 'verify'">
+  <form id="form_verify_pin" method="post" is="dmx-serverconnect-form" action="../api/Security/verifypin" dmx-on:success="regnotification.success('Your e-mail is verified');reg_show_verify.setValue('thankyou');flow1.run()"><div class="row">
+   <div class="col-12 text-left">
+      <div class="row">
+        <div class="col">
+          <h3>Verify your e-mail</h3>
+          <p class="text-h3">A verification code has been sent to your registered e-mail address.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mt-4">
+          <input type="email" id="verify_email" name="verify_email" class="form-control" placeholder="Email" required="" data-rule-email="" data-msg-required="Please enter your registered e-mail address">
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col">
+          <input type="password" id="verify_pin" name="verify_pin" class="form-control" placeholder="PIN" required="" data-msg-required="Please enter the PIN sent to you.">
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col">
+          <button id="verify_submit" class="btn btn-primary btn-block" type="submit">Verify</button>
+<button id="verify_cancel" class="btn btn-block btn-outline-secondary" dmx-on:click="reg_show_verify.setValue('register')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div></form>
+</div>
+<div class="container" is="dmx-if" id="conditional3" dmx-bind:condition="reg_show_verify.value == 'thankyou'">
+<div class="row justify-content-center text-center">
+  <div class="col col-md-8">
+    <h3>Thank you!</h3>
+    <p class="text-h3">Your e-mail is verified and you are logged in. If you are not redirected please <a href="/app">click here</a>.</p>
+  </div>
+</div>
+</div>

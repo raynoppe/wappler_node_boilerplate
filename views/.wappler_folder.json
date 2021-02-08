@@ -1,6 +1,6 @@
 {
-  "test.ejs": {
-    "layoutPage": "main",
+  "app.ejs": {
+    "layoutPage": "user",
     "description": ""
   }
 }

@@ -1,0 +1,107 @@
+{
+  "type": "mysql",
+  "connection": {
+    "host": "localhost",
+    "port": 9906,
+    "user": "db_user",
+    "password": "9PP8OzJN",
+    "database": "cocktail"
+  },
+  "direct": true,
+  "schema": {
+    "tables": {
+      "users": {
+        "db": {
+          "engine": "InnoDB",
+          "schema": "cocktail",
+          "collation": "utf8mb4_unicode_ci",
+          "comment": ""
+        },
+        "columns": {
+          "id": {
+            "db": {
+              "type": "increments",
+              "primary": true,
+              "comment": "",
+              "nullable": false
+            }
+          },
+          "username": {
+            "db": {
+              "type": "string",
+              "maxLength": 100,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "firstname": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "lastname": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "email": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "password": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "pin": {
+            "db": {
+              "type": "string",
+              "maxLength": 20,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "privs": {
+            "db": {
+              "type": "string",
+              "default": "User",
+              "maxLength": 20,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          },
+          "verified": {
+            "db": {
+              "type": "string",
+              "default": "No",
+              "maxLength": 10,
+              "primary": false,
+              "comment": "",
+              "nullable": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

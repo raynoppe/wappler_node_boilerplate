@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "options": {
+      "linkedFile": "/views/partials/loginform.ejs",
+      "linkedForm": "login_reset"
+    },
+    "$_POST": [
+      {
+        "type": "text",
+        "fieldName": "email_recover",
+        "name": "email_recover"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "validate",
+        "module": "validator",
+        "action": "validate",
+        "options": {
+          "data": [
+            {
+              "name": "validate_email",
+              "value": "{{$_POST.email_recover}}",
+              "rules": {
+                "db:exists": {
+                  "param": {
+                    "connection": "Cocktail",
+                    "table": "users",
+                    "column": "email"
+                  },
+                  "message": "No matching record found for the supplied email address"
+                }
+              },
+              "fieldName": "email_recover"
+            }
+          ]
+        }
+      },
+      {
+        "name": "newSecpin",
+        "module": "core",
+        "action": "setvalue",
+        "options": {
+          "key": "newSecpin",
+          "value": "{{secpin()}}"
+        }
+      },
+      {
+        "name": "update",
+        "module": "dbupdater",
+        "action": "update",
+        "options": {
+          "connection": "Cocktail",
+          "sql": {
+            "type": "update",
+            "values": [
+              {
+                "table": "users",
+                "column": "pin",
+                "type": "text",
+                "value": "{{newSecpin}}"
+              }
+            ],
+            "table": "users",
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "email",
+                  "field": "email",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{$_POST.email_recover}}",
+                  "data": {
+                    "column": "email"
+                  },
+                  "operation": "="
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "UPDATE users\nSET pin = :P1 /* {{newSecpin}} */\nWHERE email = :P2 /* {{$_POST.email_recover}} */",
+            "params": [
+              {
+                "name": ":P1",
+                "type": "expression",
+                "value": "{{newSecpin}}"
+              },
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P2",
+                "value": "{{$_POST.email_recover}}"
+              }
+            ]
+          }
+        },
+        "meta": [
+          {
+            "name": "affected",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "",
+        "module": "mail",
+        "action": "send",
+        "options": {
+          "instance": "mail",
+          "subject": "Password recovery pin",
+          "fromName": "Admin",
+          "fromEmail": "admin@mapped.life",
+          "toEmail": "{{$_POST.email_recover}}",
+          "body": "Your password recovery pin:\n\n{{newSecpin}}"
+        }
+      }
+    ]
+  }
+}
